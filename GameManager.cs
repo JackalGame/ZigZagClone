@@ -24,7 +24,6 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         gameStarted = true;
-        FindObjectOfType<Road>().StartBuilding();
     }
     
     public void EndGame()

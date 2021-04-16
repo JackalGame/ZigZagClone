@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class CharController : MonoBehaviour
 {
@@ -9,14 +10,21 @@ public class CharController : MonoBehaviour
     private bool isFalling = false;
 
     [SerializeField] Transform rayStart;
-    [SerializeField] GameObject crystalEffect;
+    [SerializeField] GameObject colourCrystalEffect;
+    [SerializeField] GameObject neutralCrystalEffect;
     [SerializeField] float playerSpeed = 2f;
+    [SerializeField] float playerIncreasedSpeedAmount = 0.1f;
+    [SerializeField] float playerDecreaseSpeedAmount = 1f;
+    [SerializeField] float maxPlayerSpeed = 4.5f;
+
+    private float startSpeed;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
         gameManager = FindObjectOfType<GameManager>();
+        startSpeed = playerSpeed;
     }
 
     private void FixedUpdate()
@@ -58,8 +66,9 @@ public class CharController : MonoBehaviour
             gameManager.EndGame();
         }
 
+
     }
-    
+
     private void Switch()
     {
         if (!gameManager.gameStarted)
@@ -81,14 +90,45 @@ public class CharController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Crystal")
+        if(other.tag == "Colour Crystal")
         {
             gameManager.IncreaseScore(); 
             
-            GameObject crystalFX = Instantiate(crystalEffect, rayStart.transform.position, Quaternion.identity);
-            Destroy(crystalFX, 2); 
+            GameObject colCrystalFX = Instantiate(colourCrystalEffect, rayStart.transform.position, Quaternion.identity);
+            Destroy(colCrystalFX, 2); 
             Destroy(other.gameObject);
+            if(playerSpeed <= 4)
+            {
+                IncreaseSpeed();
+            }
         }
+        else if(other.tag == "Glass Crystal")
+        {
+            gameManager.IncreaseScore();
+
+            GameObject neutCrystalFX = Instantiate(neutralCrystalEffect, rayStart.transform.position, Quaternion.identity);
+            Destroy(neutCrystalFX, 2);
+            Destroy(other.gameObject);
+            if (playerSpeed > 2)
+            {
+                DecreaseSpeed();
+            }
+        }
+
+
     }
 
+    private void IncreaseSpeed()
+    {
+        if (playerSpeed >= maxPlayerSpeed) { return; }
+        
+        playerSpeed += playerIncreasedSpeedAmount;
+    }
+
+    private void DecreaseSpeed()
+    {
+        if((playerSpeed - playerDecreaseSpeedAmount) < startSpeed) { return; } 
+        
+        playerSpeed -= playerDecreaseSpeedAmount;
+    }
 }

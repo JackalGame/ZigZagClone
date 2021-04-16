@@ -11,12 +11,14 @@ public class RoadPart : MonoBehaviour
     {
         if (FindObjectOfType<GameManager>().gameStarted)
         {
+            FindObjectOfType<Road>().CreateNewRoadPart();
             StartCoroutine(DestroyRoadPart());
         }
     }
 
     IEnumerator DestroyRoadPart()
     {
+        FindObjectOfType<Road>().CreateNewRoadPart();
         yield return new WaitForSeconds(waitToDestroy);
         Destroy(gameObject);
     }

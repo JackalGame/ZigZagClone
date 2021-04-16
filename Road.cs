@@ -7,14 +7,9 @@ public class Road : MonoBehaviour
 
     [SerializeField] Vector3 lastPos;
     [SerializeField] float offset = 0.71f;
-    [SerializeField] float roadSpawnTime = 0.5f;
 
     private int roadCount = 0;
 
-    public void StartBuilding()
-    {
-        InvokeRepeating("CreateNewRoadPart", 1f, roadSpawnTime); 
-    }
 
     public void CreateNewRoadPart()
     {
@@ -36,7 +31,15 @@ public class Road : MonoBehaviour
         roadCount++;
         if(roadCount % 5 == 0)
         {
-            road.transform.GetChild(0).gameObject.SetActive(true);
+            int crystalSpawnChance = Random.Range(1, 21);
+            if(crystalSpawnChance < 19)
+            {
+                road.transform.GetChild(0).gameObject.SetActive(true);
+            }
+            else
+            {
+                road.transform.GetChild(1).gameObject.SetActive(true);
+            }
         }
     }
 }
